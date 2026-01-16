@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="grid">
+    <section>
+      <h1 class="h1">Ứng dụng Demo DevSecOps</h1>
+      <p class="p">
+        Ứng dụng Flask tối giản để phục vụ pipeline DevSecOps:
+        <b>SAST (SonarQube)</b>, <b>Image Scan (Trivy)</b>, <b>DAST (OWASP ZAP)</b>.
+      </p>
+
+      <div class="chips">
+        <span class="chip">Flask</span>
+        <span class="chip">SQLite</span>
+        <span class="chip">Docker-ready</span>
+        <span class="chip">CI/CD-ready</span>
+      </div>
+
+      <div class="actions">
+        <a class="btn" href="/login">Đi tới Login</a>
+        <a class="btn btn-ghost" href="/search">Đi tới Search</a>
+      </div>
+
+      <div class="note" style="max-width:560px;">
+        <b>Quick check:</b> <code>/health</code> trả về <code>OK</code> (dùng để kiểm tra app sống khi chạy Docker/DAST).
+      </div>
+    </section>
+
+    <aside class="panel">
+      <h3 class="h3">Tài khoản demo</h3>
+      <div class="kv">
+        <div class="k">Username</div><div class="v"><code>admin</code></div>
+        <div class="k">Password</div><div class="v"><code>admin123</code></div>
+      </div>
+
+      <hr class="hr" />
+
+      <h3 class="h3">Lỗ hổng cố tình</h3>
+      <ul class="list">
+        <li><b>SQL Injection</b> tại <code>/login</code></li>
+        <li><b>XSS</b> tại <code>/search</code></li>
+        <li><b>Hardcoded Secret</b> trong source</li>
+      </ul>
+    </aside>
+  </div>
+{% endblock %}

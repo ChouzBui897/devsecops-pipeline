@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2 class="h2">Search</h2>
+
+  <form method="get" class="form">
+    <div class="field">
+      <label>Từ khóa</label>
+      <input name="q" value="{{ q or '' }}" placeholder="Nhập từ khóa..." />
+    </div>
+
+    <button class="btn" type="submit">Search</button>
+  </form>
+
+  {% if q is not none %}
+    <div class="note">
+      <b>Intentional vulnerability:</b> dữ liệu hiển thị phía dưới đang <b>không escape</b> (cố tình tạo XSS).
+    </div>
+
+    <div class="resultbox">
+      <div class="resulttitle">Search result for:</div>
+      <!-- INTENTIONAL XSS -->
+      <div class="resultcontent">{{ q | safe }}</div>
+    </div>
+
+    <div class="codeblock">
+      Test XSS: <code>&lt;script&gt;alert(1)&lt;/script&gt;</code>
+    </div>
+  {% endif %}
+{% endblock %}

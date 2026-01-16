@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{{ title or "DevSecOps Demo App" }}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="bg"></div>
+
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo">DS</div>
+        <div>
+          <div class="brand-title">DevSecOps Demo</div>
+          <div class="brand-sub">Flask + SQLite (intentionally vulnerable)</div>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+        <a href="/search">Search</a>
+      </nav>
+    </header>
+
+    <main class="card">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      <small>⚠️ Ứng dụng demo phục vụ đồ án DevSecOps — cố tình có lỗ hổng để test SAST/DAST.</small>
+    </footer>
+  </div>
+</body>
+</html>
