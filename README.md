@@ -60,11 +60,11 @@ to serve as input for automated security testing tools (SAST/DAST/Image Scan).
 
 
 
-\## Week 2 – Web Application (Flask) + Intentional Vulnerabilities
+\## Week 3,4 – Web Application (Flask) + Intentional Vulnerabilities
 
 
 
-\### Features (Week 2)
+\### Features (Week 3,4)
 
 \- Home page: `/`
 
@@ -149,7 +149,7 @@ Health: http://localhost:5000/health
 \\- Expected: SAST (SonarQube) flags hardcoded secret
 
 
-## Week 3 – Docker & Environment Standardization (Completed)
+## Week 5,6 – Docker & Environment Standardization (Completed)
 - Dockerized the Flask web application:
   - Created/updated `Dockerfile` to build a Docker image for the app
   - Switched runtime to `gunicorn` (production-like server) instead of Flask dev server
@@ -171,7 +171,7 @@ Health: http://localhost:5000/health
 - `docker-compose.yml` for local environment
 
 
-## Week 4 – CI/CD with GitLab CI (Completed)
+## Week 7,8 – CI/CD with GitLab CI (Completed)
 - Created/updated `.gitlab-ci.yml` with 3 stages: **build → test → docker-build**
 - Pipeline triggers automatically on every `git push`
 - Build stage:
@@ -185,9 +185,9 @@ Health: http://localhost:5000/health
 
 \\## Roadmap
 
-\\- Week 5: Integrate SonarQube (SAST), Trivy (Image Scan), OWASP ZAP (DAST)
+\\- Week 9,10: Integrate SonarQube (SAST), Trivy (Image Scan), OWASP ZAP (DAST)
 
-\\- Week 6: Fix 1–2 vulnerabilities and compare before/after results
+\\- Week 11,12: Fix 1–2 vulnerabilities and compare before/after results
 
 
 
