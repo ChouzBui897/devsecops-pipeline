@@ -149,10 +149,29 @@ Health: http://localhost:5000/health
 \\- Expected: SAST (SonarQube) flags hardcoded secret
 
 
+## Week 3 – Docker & Environment Standardization (Completed)
+- Dockerized the Flask web application:
+  - Created/updated `Dockerfile` to build a Docker image for the app
+  - Switched runtime to `gunicorn` (production-like server) instead of Flask dev server
+  - Exposed port `5000` and verified the app runs in a container
+
+- Standardized local DevSecOps environment using Docker Compose:
+  - Added `docker-compose.yml` to run services in one command:
+    - `web` (Flask app container)
+    - `sonarqube` (SAST platform, port 9000)
+    - `zap` (OWASP ZAP daemon container, port 8080)
+  - Verified services are accessible:
+    - Web: `http://localhost:5000` (and `/health`)
+    - SonarQube: `http://localhost:9000`
+    - ZAP daemon: `http://localhost:8080`
+
+### Deliverables
+- `src/app/Dockerfile` (gunicorn-based)
+- `src/app/requirements.txt` updated (added `gunicorn`)
+- `docker-compose.yml` for local environment
+
 
 \\## Roadmap
-
-\\- Week 3: Dockerize the Flask app (Dockerfile / docker-compose)
 
 \\- Week 4: Setup GitLab CI pipeline stages (build/test/docker-build)
 
