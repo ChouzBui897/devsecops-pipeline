@@ -171,9 +171,19 @@ Health: http://localhost:5000/health
 - `docker-compose.yml` for local environment
 
 
-\\## Roadmap
+## Week 4 – CI/CD with GitLab CI (Completed)
+- Created/updated `.gitlab-ci.yml` with 3 stages: **build → test → docker-build**
+- Pipeline triggers automatically on every `git push`
+- Build stage:
+  - Install dependencies from `requirements.txt`
+  - Check Python syntax (`python -m py_compile app.py`)
+- Test stage:
+  - Run a smoke test by starting the app and calling `GET /health` (expects `OK`)
+- Docker-build stage:
+  - Build Docker image from `./src/app`
+  - (Optional) Push image to GitLab Container Registry using `$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA`
 
-\\- Week 4: Setup GitLab CI pipeline stages (build/test/docker-build)
+\\## Roadmap
 
 \\- Week 5: Integrate SonarQube (SAST), Trivy (Image Scan), OWASP ZAP (DAST)
 
