@@ -3,7 +3,8 @@ version: '3.8'
 services:
   web:
     build: ./src/app
-    container_name: devsecops_web
+    image: devsecops-web-final:latest 
+    container_name: devsecops_web_container
     ports:
       - "5000:5000"
     networks:
