@@ -1,21 +1,41 @@
+version: '3.8'
+
 services:
   web:
     build: ./src/app
     container_name: devsecops_web
     ports:
       - "5000:5000"
+    networks:
+      - devsecops_net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   sonarqube:
     image: sonarqube:lts-community
     container_name: devsecops_sonarqube
     ports:
       - "9000:9000"
+    networks:
+      - devsecops_net
     environment:
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
 
   zap:
     image: ghcr.io/zaproxy/zaproxy:stable
     container_name: devsecops_zap
-    command: ["zap.sh", "-daemon", "-host", "0.0.0.0", "-port", "8080"]
+    user: root # Cần quyền root để ghi report vào volume
+    command: ["zap.sh", "-daemon", "-host", "0.0.0.0", "-port", "8080", "-config", "api.disablekey=true"]
     ports:
       - "8080:8080"
+    networks:
+      - devsecops_net
+    volumes:
+      - ./zap_reports:/zap/wrk:rw
+
+networks:
+  devsecops_net:
+    driver: bridge
