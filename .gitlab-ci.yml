@@ -66,7 +66,7 @@ zap-scan:
     - shell
   script:
     - mkdir zap_reports
-    - docker run --rm -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://192.168.1.239:5000 -r zap_report.html
+    - "docker run --rm -v ${PWD}/zap_reports:/zap/wrk:rw ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://192.168.1.239:5000 -r zap_report.html"
   artifacts:
     when: always
     paths:
