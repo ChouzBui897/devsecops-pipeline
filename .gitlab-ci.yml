@@ -27,6 +27,8 @@ test:
 
 sonarqube-check:
   stage: sast
+  tags:
+    - shell
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
