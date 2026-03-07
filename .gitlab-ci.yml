@@ -29,13 +29,8 @@ sonarqube-check:
   stage: sast
   tags:
     - shell
-  image: 
-    name: sonarsource/sonar-scanner-cli:latest
-    entrypoint: [""]
-  variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   script:
-    - sonar-scanner -Dsonar.projectKey=devsecops-flask-web -Dsonar.sources=src/app -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+    - docker run --rm -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=devsecops-flask-web -Dsonar.sources=src/app -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
   allow_failure: true
 
 docker-build:
