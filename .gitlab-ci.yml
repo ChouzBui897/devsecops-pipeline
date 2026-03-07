@@ -66,6 +66,7 @@ zap-scan:
     - shell
   script:
     - mkdir -p zap_reports
+    - sleep 10
     - |
       docker run --rm \
         -v $(pwd)/zap_reports:/zap/wrk:rw \
