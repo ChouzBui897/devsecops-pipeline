@@ -65,7 +65,7 @@ zap-scan:
   tags:
     - shell
   script:
-    - if (!(Test-Path "zap_reports")) { New-Item -ItemType Directory -Path "zap_reports" }
+    - mkdir zap_reports
     - docker run --rm -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://192.168.1.239:5000 -r zap_report.html
   artifacts:
     when: always
