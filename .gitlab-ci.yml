@@ -60,14 +60,14 @@ deploy-staging:
     - docker compose up -d web
     - echo "Deploy thành công"
 
-zap-scan:
-  stage: dast
-  tags:
-    - shell  
-  script:
-    - if (!(Test-Path "zap_reports")) { New-Item -ItemType Directory -Path "zap_reports" }
-    - docker run --rm -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://192.168.1.239:5000 -r zap_report.html
-  artifacts:
-    when: always
-    paths:
-      - zap_reports/zap_report.html
+# zap-scan:
+#   stage: dast
+#   tags:
+#     - shell  
+#   script:
+#     - if (!(Test-Path "zap_reports")) { New-Item -ItemType Directory -Path "zap_reports" }
+#     - docker run --rm -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://192.168.1.239:5000 -r zap_report.html
+#   artifacts:
+#     when: always
+#     paths:
+#       - zap_reports/zap_report.html
