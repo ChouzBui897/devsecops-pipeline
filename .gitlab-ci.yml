@@ -72,4 +72,3 @@ deploy-staging:
 #   artifacts:
 #     paths:
 #       - zap_report.html
-#1
