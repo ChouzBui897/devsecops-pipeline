@@ -1,25 +1,22 @@
 stages:
   - build
   - test
-  - sast        
+  - sast
   - docker-build
-  - image-scan  
-  - deploy      
+  - image-scan
+  - deploy
   - dast
 
-# 1) BUILD: kiểm tra python + cài deps + check syntax
 build:
   image: python:3.10-slim
   stage: build
   before_script:
     - cd src/app
-    - python -V
     - pip install --upgrade pip
     - pip install -r requirements.txt
   script:
     - python -m py_compile app.py
 
-# 2) TEST: smoke test /health (không cần pytest)
 test:
   image: python:3.10-slim
   stage: test
@@ -32,7 +29,6 @@ test:
     - sleep 3
     - python -c "import urllib.request; print(urllib.request.urlopen('http://127.0.0.1:5000/health').read().decode())"
 
-# 3) SAST: Quét mã nguồn với SonarQube
 sonarqube-check:
   stage: sast
   image: 
@@ -41,14 +37,9 @@ sonarqube-check:
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   script:
-    - sonar-scanner \
-        -Dsonar.projectKey=devsecops-flask-web \
-        -Dsonar.sources=src/app \
-        -Dsonar.host.url=$SONAR_HOST_URL \
-        -Dsonar.login=$SONAR_TOKEN
+    - sonar-scanner -Dsonar.projectKey=devsecops-flask-web -Dsonar.sources=src/app -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
   allow_failure: true
 
-# 4) DOCKER BUILD + PUSH lên GitLab Container Registry
 docker-build:
   image: docker:24
   stage: docker-build
@@ -68,7 +59,6 @@ docker-build:
         docker push "$CI_REGISTRY_IMAGE:latest"
       fi
 
-# 5) IMAGE SCAN: Quét lỗ hổng Docker Image bằng Trivy
 trivy-scan:
   stage: image-scan
   image: docker:24
@@ -77,16 +67,14 @@ trivy-scan:
   script:
     - docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:latest image --severity HIGH,CRITICAL "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
 
-# 6) DEPLOY (OPS): Triển khai lên môi trường chạy thử
 deploy-staging:
   stage: deploy
   tags:
-    - shell # Quan trọng: Phải dùng Runner có quyền chạy Docker trên máy của bạn
+    - shell
   script:
     - docker compose up -d web
     - echo "Ứng dụng đã được Ops triển khai thành công."
 
-# 7) DAST: Quét ứng dụng đang chạy bằng ZAP
 zap-scan:
   stage: dast
   image: ghcr.io/zaproxy/zaproxy:stable
