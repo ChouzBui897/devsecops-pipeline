@@ -5,7 +5,7 @@ stages:
   - docker-build
   - image-scan
   - deploy
-  - dast
+  - security_scan_dynamic
 
 build:
   image: python:3.10-slim
@@ -60,8 +60,8 @@ deploy-staging:
     - docker compose up -d web
     - echo "Deploy thành công"
 
-zap-scan:
-  stage: dast
+run_dynamic_scan:
+  stage: security_scan_dynamic
   tags:
     - shell
   script:
