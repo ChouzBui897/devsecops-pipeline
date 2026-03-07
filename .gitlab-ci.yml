@@ -30,7 +30,7 @@ sonarqube-check:
   tags:
     - shell
   script:
-    - docker run --rm -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=devsecops-flask-web -Dsonar.sources=src/app -Dsonar.host.url=$SONAR_HOST_URL -Dsonar.login=$SONAR_TOKEN
+    - docker run --rm -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=devsecops-flask-web" "-Dsonar.sources=src/app" "-Dsonar.host.url=$SONAR_HOST_URL" "-Dsonar.login=$SONAR_TOKEN"
   allow_failure: true
 
 docker-build:
