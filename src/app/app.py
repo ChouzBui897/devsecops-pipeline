@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template
 import sqlite3
 import os
-
+import hashlib
 app = Flask(__name__)
 
 # 1. HARDCODED SECRET (Đã độ lại): 
@@ -62,6 +62,22 @@ def search():
 @app.route("/health")
 def health():
     return "OK", 200
+
+# 1. LỖI DÙNG THUẬT TOÁN MÃ HÓA YẾU (Bản Community chắc chắn bắt lỗi này)
+@app.route("/hash")
+def hash_pass():
+    password = request.args.get("p", "default")
+    # SonarQube cực kỳ ghét MD5 và sẽ đánh dấu đây là Vulnerability nghiêm trọng
+    weak_hash = hashlib.md5(password.encode()).hexdigest() 
+    return weak_hash
+
+# 2. LỖI THỰC THI MÃ TỪ NGƯỜI DÙNG (Code Injection)
+@app.route("/calc")
+def calculator():
+    expr = request.args.get("expr", "1+1")
+    # Dùng eval() với dữ liệu người dùng là tối kỵ. Bản free cũng sẽ báo đỏ chót.
+    result = eval(expr) 
+    return str(result)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
