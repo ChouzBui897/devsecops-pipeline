@@ -9,11 +9,36 @@ services:
       - "5000:5000"
     networks:
       - devsecops_net
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=${SECRET_KEY:-default_secret_for_now} 
+    
+    volumes:
+      - sqlite_data:/app/instance
+      - app_logs:/var/log/app
+    
+    restart: unless-stopped
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+        reservations:
+          cpus: '0.10'
+          memory: 128M
+
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+      
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   sonarqube:
     image: sonarqube:lts-community
@@ -30,6 +55,8 @@ services:
       - sonarqube_logs:/opt/sonarqube/logs
 
 volumes:
+  sqlite_data:
+  app_logs:
   sonarqube_data:
   sonarqube_extensions:
   sonarqube_logs:
