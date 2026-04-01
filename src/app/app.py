@@ -2,10 +2,12 @@ from flask import Flask, request, render_template
 import sqlite3
 import os
 import hashlib
+
 app = Flask(__name__)
 
-# 1. HARDCODED SECRET (Đã độ lại): 
-# Đổi tên biến và dùng chuỗi Hex phức tạp để dụ máy quét nhận diện đây là token thật
+# Vulnerability 1: Hardcoded Sensitive Data (CWE-798)
+# Simulating a scenario where developers hardcode database credentials 
+# or secret keys directly into the source code repository.
 DB_PASSWORD = "SuperSecretPassword123!@#"
 app.secret_key = "8f42a73054b17af23812563f1201552a" 
 
@@ -27,9 +29,10 @@ def login():
         username = request.form.get("username", "")
         password = request.form.get("password", "")
 
-        # 2. SQL INJECTION (Đã độ lại): 
-        # Cố tình dùng phép CỘNG CHUỖI (+) thay vì f-string. 
-        # SonarQube cực kỳ dị ứng với kiểu cộng chuỗi nối thẳng vào SQL thế này.
+        # Vulnerability 2: SQL Injection (CWE-89)
+        # Improper Neutralization of Special Elements used in an SQL Command.
+        # Directly concatenating user input into the SQL query string allows 
+        # attackers to manipulate the statement logic (e.g., bypassing authentication).
         query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'"
 
         conn = get_db()
@@ -39,6 +42,7 @@ def login():
             result = cur.fetchone()
         except Exception as e:
             result = None
+            # Information Exposure Through an Error Message (CWE-209)
             message = "DB error: " + str(e)
         finally:
             conn.close()
@@ -54,30 +58,14 @@ def login():
 def search():
     q = request.args.get("q", "")
     
-    # 3. XSS (Đã độ lại):
-    # Thay vì render_template, ta nối thẳng input của người dùng vào chuỗi HTML và trả về trực tiếp.
-    # SonarQube sẽ lập tức bắt được lỗi Reflected XSS (Trả dữ liệu bẩn thẳng ra trình duyệt).
+    # Vulnerability 3: Reflected Cross-Site Scripting (XSS) (CWE-79)
+    # The application receives input from an HTTP request and includes it in the 
+    # immediate response in an unsafe way, without proper escaping.
     return "<h1>Search results for: " + q + "</h1>"
 
 @app.route("/health")
 def health():
     return "OK", 200
-
-# 1. LỖI DÙNG THUẬT TOÁN MÃ HÓA YẾU (Bản Community chắc chắn bắt lỗi này)
-@app.route("/hash")
-def hash_pass():
-    password = request.args.get("p", "default")
-    # SonarQube cực kỳ ghét MD5 và sẽ đánh dấu đây là Vulnerability nghiêm trọng
-    weak_hash = hashlib.md5(password.encode()).hexdigest() 
-    return weak_hash
-
-# 2. LỖI THỰC THI MÃ TỪ NGƯỜI DÙNG (Code Injection)
-@app.route("/calc")
-def calculator():
-    expr = request.args.get("expr", "1+1")
-    # Dùng eval() với dữ liệu người dùng là tối kỵ. Bản free cũng sẽ báo đỏ chót.
-    result = eval(expr) 
-    return str(result)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
