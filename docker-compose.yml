@@ -10,7 +10,7 @@ services:
 
     image: ${CI_REGISTRY_IMAGE}:latest
 
-    container_name: devsecops_web_container
+    container_name: devsecops-web-container
 
     ports:
 
@@ -36,7 +36,7 @@ services:
 
     image: sonarqube:lts-community
 
-    container_name: devsecops_sonarqube
+    container_name: devsecops-sonarqube
 
     ports:
 

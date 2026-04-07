@@ -77,7 +77,7 @@ run_dynamic_scan:
   script:
     # - if (!(Test-Path "zap_reports")) { New-Item -ItemType Directory -Path "zap_reports" }
     - mkdir -p zap_reports
-    - docker run --rm --network devsecops_net -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://devsecops_web_container:5000 -r zap_report.html
+    - docker run --rm --network devsecops_net -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://devsecops-web-container:5000 -r zap_report.html
   artifacts:
     when: always
     paths:
