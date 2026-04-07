@@ -41,7 +41,6 @@ bandit-sast:
     - pip install bandit
     # Quét toàn bộ code trong src/app, xuất kết quả ra màn hình log
     - bandit -r src/app
-  allow_failure: true
 
 docker-build:
   image: docker:24
