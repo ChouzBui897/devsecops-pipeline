@@ -73,5 +73,5 @@ volumes:
 networks:
 
   devsecops_net:
-
+    name: devsecops_net
     driver: bridge
