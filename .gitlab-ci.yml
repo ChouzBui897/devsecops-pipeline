@@ -32,8 +32,18 @@ sonarqube-check:
   before_script:
     # Lệnh PowerShell để kiểm tra và tạo mạng nếu chưa tồn tại
     - if (!(docker network ls --filter name=^devsecops_net$ -q)) { docker network create devsecops_net }
+    - docker compose up -d sonarqube
+    # Đợi SonarQube khởi động xong (khoảng 30-60s tùy máy)
+    - echo "Waiting for SonarQube to start..."
+    - Start-Sleep -Seconds 30
   script:
-    - docker run --rm --network devsecops_net -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=devsecops-flask-web" "-Dsonar.sources=src/app" "-Dsonar.host.url=http://devsecops_sonarqube:9000" "-Dsonar.login=$SONAR_TOKEN"
+    - docker run --rm --network devsecops_net `
+        -e SONAR_HOST_URL="http://devsecops_sonarqube:9000" `
+        -e SONAR_TOKEN="$SONAR_TOKEN" `
+        -v "${CI_PROJECT_DIR}:/usr/src" `
+        sonarsource/sonar-scanner-cli `
+        -Dsonar.projectKey=devsecops-flask-web `
+        -Dsonar.sources=src/app
   allow_failure: true
 
 bandit-sast:

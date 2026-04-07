@@ -5,35 +5,22 @@ services:
     build: ./src/app
     image: ${CI_REGISTRY_IMAGE}:latest
     container_name: devsecops_web_container
+    # [Ops] Cấu hình giới hạn tài nguyên trực tiếp cho Docker Engine
+    mem_limit: 512m
+    cpus: 0.5
     ports:
       - "5000:5000"
     networks:
       - devsecops_net
-    environment:
-      - FLASK_ENV=production
-      - SECRET_KEY=${SECRET_KEY:-default_secret_for_now} 
-    
+    restart: unless-stopped
     volumes:
       - sqlite_data:/app/instance
       - app_logs:/var/log/app
-    
-    restart: unless-stopped
-    
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 512M
-        reservations:
-          cpus: '0.10'
-          memory: 128M
-
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 10s
       timeout: 5s
       retries: 5
-      
     logging:
       driver: "json-file"
       options:
