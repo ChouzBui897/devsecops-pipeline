@@ -67,6 +67,8 @@ deploy-staging:
   tags:
     - shell
   script:
+    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - export IMAGE_TAG=$CI_COMMIT_SHORT_SHA
     - docker compose up -d web
     - echo "Deploy thành công"
 

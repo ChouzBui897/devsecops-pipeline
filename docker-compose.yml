@@ -6,8 +6,6 @@ services:
 
   web:
 
-    build: ./src/app
-
     image: ${CI_REGISTRY_IMAGE:-devsecops-web-image}:latest
 
     container_name: devsecops-web-container
