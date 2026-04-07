@@ -8,7 +8,7 @@ services:
 
     build: ./src/app
 
-    image: ${CI_REGISTRY_IMAGE}:latest
+    image: ${CI_REGISTRY_IMAGE:-devsecops-web-image}:latest
 
     container_name: devsecops-web-container
 
