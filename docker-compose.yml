@@ -1,56 +1,77 @@
 version: '3.8'
 
+
+
 services:
+
   web:
+
     build: ./src/app
+
     image: ${CI_REGISTRY_IMAGE}:latest
+
     container_name: devsecops_web_container
-    # [Ops] Cấu hình giới hạn tài nguyên trực tiếp cho Docker Engine
-    mem_limit: 512m
-    cpus: 0.5
+
     ports:
+
       - "5000:5000"
+
     networks:
+
       - devsecops_net
-    restart: unless-stopped
-    volumes:
-      - sqlite_data:/app/instance
-      - app_logs:/var/log/app
+
     healthcheck:
+
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+
       interval: 10s
+
       timeout: 5s
+
       retries: 5
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+
+
 
   sonarqube:
+
     image: sonarqube:lts-community
+
     container_name: devsecops_sonarqube
+
     ports:
+
       - "9000:9000"
+
     networks:
+
       - devsecops_net
+
     environment:
+
       - SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true
+
     volumes:
+
       - sonarqube_data:/opt/sonarqube/data
+
       - sonarqube_extensions:/opt/sonarqube/extensions
+
       - sonarqube_logs:/opt/sonarqube/logs
 
+
+
 volumes:
-  sqlite_data:
-  app_logs:
+
   sonarqube_data:
+
   sonarqube_extensions:
+
   sonarqube_logs:
 
-networks:
-  devsecops_net:
-    name: devsecops_net
-    driver: bridge
 
-#
+
+networks:
+
+  devsecops_net:
+
+    driver: bridge
