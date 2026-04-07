@@ -8,7 +8,7 @@ stages:
   - security_scan_dynamic
 
 build:
-  image: python:3.10-slim
+  image: python:3.6-slim
   stage: build
   script:
     - cd src/app
@@ -16,7 +16,7 @@ build:
     - python -m py_compile app.py
 
 test:
-  image: python:3.10-slim
+  image: python:3.6-slim
   stage: test
   script:
     - cd src/app
@@ -36,7 +36,7 @@ sonarqube-check:
 
 bandit-sast:
   stage: sast
-  image: python:3.10-slim
+  image: python:3.6-slim
   script:
     - pip install bandit
     # Quét toàn bộ code trong src/app, xuất kết quả ra màn hình log
