@@ -33,7 +33,7 @@ sonarqube-check:
     # Lệnh PowerShell để kiểm tra và tạo mạng nếu chưa tồn tại
     - if (!(docker network ls --filter name=^devsecops_net$ -q)) { docker network create devsecops_net }
   script:
-    - docker run --rm --network devsecops_net -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=devsecops-flask-web" "-Dsonar.sources=src/app" "-Dsonar.host.url=$SONAR_HOST_URL" "-Dsonar.login=$SONAR_TOKEN"
+    - docker run --rm --network devsecops_net -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=devsecops-flask-web" "-Dsonar.sources=src/app" "-Dsonar.host.url=http://devsecops_sonarqube:9000" "-Dsonar.login=$SONAR_TOKEN"
   allow_failure: true
 
 bandit-sast:
@@ -80,7 +80,7 @@ run_dynamic_scan:
     - if (!(docker network ls --filter name=^devsecops_net$ -q)) { docker network create devsecops_net }
   script:
     - if (!(Test-Path "zap_reports")) { New-Item -ItemType Directory -Path "zap_reports" }
-    - docker run --rm --network devsecops_net -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://192.168.5.227:5000 -r zap_report.html
+    - docker run --rm --network devsecops_net -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://devsecops_web_container:5000 -r zap_report.html
   artifacts:
     when: always
     paths:
