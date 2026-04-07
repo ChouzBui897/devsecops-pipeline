@@ -67,10 +67,13 @@ deploy-staging:
   tags:
     - shell
   script:
-    - docker pull "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-    - export IMAGE_TAG=$CI_COMMIT_SHORT_SHA
+    - docker pull "${env:CI_REGISTRY_IMAGE}:${env:CI_COMMIT_SHORT_SHA}"
+    
+    - Set-Content -Path .env -Value "IMAGE_TAG=${env:CI_COMMIT_SHORT_SHA}"
+    - Add-Content -Path .env -Value "CI_REGISTRY_IMAGE=${env:CI_REGISTRY_IMAGE}"
+    
     - docker compose up -d web
-    - echo "Deploy thành công"
+    - Write-Output "Deploy thành công"
 
 run_dynamic_scan:
   stage: security_scan_dynamic
