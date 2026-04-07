@@ -19,6 +19,18 @@ DB_NAME = os.path.join(BASE_DIR, "database.db")
 def get_db():
     return sqlite3.connect(DB_NAME)
 
+@app.after_request
+def add_security_headers(response):
+    # Chống Clickjacking (WARN 10020)
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    # Chống MIME-sniffing (WARN 10021)
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    # Cấu hình Content Security Policy cơ bản (WARN 10038)
+    response.headers['Content-Security-Policy'] = "default-src 'self'"
+    # Cấu hình Permissions Policy (WARN 10063)
+    response.headers['Permissions-Policy'] = "geolocation=(), microphone=(), camera=()"
+    return response
+
 @app.route("/")
 def index():
     return render_template("index.html", title="Home")
