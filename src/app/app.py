@@ -61,13 +61,13 @@ def login():
 
 @app.route("/search")
 def search():
-    q = request.args.get("q", "")
-    # query = request.args.get("q", "")
+    # q = request.args.get("q", "")
+    query = request.args.get("q", "")
     # Vulnerability 3: Reflected Cross-Site Scripting (XSS) (CWE-79)
     # The application receives input from an HTTP request and includes it in the 
     # immediate response in an unsafe way, without proper escaping.
-    return "<h1>Search results for: " + q + "</h1>"
-    # return f"<h1>Kết quả tìm kiếm cho: {escape(query)}</h1>"
+    # return "<h1>Search results for: " + q + "</h1>"
+    return f"<h1>Kết quả tìm kiếm cho: {escape(query)}</h1>"
 
 @app.route("/health")
 def health():
