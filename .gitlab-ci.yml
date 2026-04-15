@@ -59,7 +59,10 @@ trivy-scan:
   services:
     - docker:24-dind
   script:
-    - docker run --rm -v "${PWD}:/root/.cache/" aquasec/trivy:0.50.1 image --format template --template "@/contrib/html.tpl" -o trivy_reports/trivy_report.html --severity HIGH,CRITICAL "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - mkdir -p trivy_reports
+    
+    - docker run --rm aquasec/trivy:0.50.1 image --format template --template "@/contrib/html.tpl" --severity HIGH,CRITICAL "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA" > trivy_reports/trivy_report.html
+  
   artifacts:
     when: always
     paths:
