@@ -15,7 +15,7 @@ services:
     restart: unless-stopped
     
     volumes:
-      - web_data:/app/data 
+      - web_data:/app 
       
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
