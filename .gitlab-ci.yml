@@ -1,10 +1,10 @@
 stages:
-  # - build
-  # - test
+  - build
+  - test
   # - sast
-  # - docker-build
+  - docker-build
   # - image-scan
-  # - deploy
+  - deploy
   - security_scan_dynamic
 
 build:
