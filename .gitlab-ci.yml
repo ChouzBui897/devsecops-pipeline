@@ -72,7 +72,9 @@ deploy-staging:
     
     - Set-Content -Path .env -Value "IMAGE_TAG=${env:CI_COMMIT_SHORT_SHA}"
     - Add-Content -Path .env -Value "CI_REGISTRY_IMAGE=${env:CI_REGISTRY_IMAGE}"
-    
+
+    - docker compose down -v
+
     - docker compose up -d web
     - Write-Output "Deploy thành công"
 
