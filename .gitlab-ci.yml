@@ -31,7 +31,7 @@ sonarqube-check:
     - shell
   script:
     # Thêm --network devsecops_net để container scanner nhìn thấy container sonarqube
-    - docker run --rm --network devsecops_net -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=devsecops-flask-web" "-Dsonar.sources=src/app" "-Dsonar.host.url=$SONAR_HOST_URL" "-Dsonar.login=$SONAR_TOKEN"
+    - docker run --rm --network devsecops_net -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=devsecops-flask-web" "-Dsonar.sources=src/app" "-Dsonar.host.url=$SONAR_HOST_URL" "-Dsonar.login=$SONAR_TOKEN" "-Dsonar.qualitygate.wait=true"
   allow_failure: true
 
 bandit-sast:
