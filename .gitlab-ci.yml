@@ -88,5 +88,3 @@ run_dynamic_scan:
     when: always
     paths:
       - zap_reports/zap_report.html
-
-#c 
