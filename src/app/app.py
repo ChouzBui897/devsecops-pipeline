@@ -9,7 +9,7 @@ app = Flask(__name__)
 # Vulnerability 1: Hardcoded Sensitive Data (CWE-798)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
-# DB_PASSWORD = "SuperSecretPassword123!@#"
+DB_PASSWORD = "SuperSecretPassword123!@#"
 app.secret_key = "8f42a73054b17af23812563f1201552a" 
 
 
