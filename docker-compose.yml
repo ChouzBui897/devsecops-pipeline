@@ -14,9 +14,6 @@ services:
       
     restart: unless-stopped
     
-    volumes:
-      - web_data:/app 
-      
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
       interval: 10s
@@ -66,8 +63,6 @@ volumes:
   sonarqube_extensions:
 
   sonarqube_logs:
-
-  web_data:
 
   
 networks:
