@@ -11,7 +11,7 @@ app = Flask(__name__)
 # or secret keys directly into the source code repository.
 # DB_PASSWORD = "SuperSecretPassword123!@#"
 app.secret_key = "8f42a73054b17af23812563f1201552a" 
-# app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "database.db")
@@ -37,13 +37,13 @@ def login():
         # Directly concatenating user input into the SQL query string allows 
         # attackers to manipulate the statement logic (e.g., bypassing authentication).
         query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'"
-        # query = "SELECT * FROM users WHERE username = ? AND password = ?"
+        
 
         conn = get_db()
         cur = conn.cursor()
         try:
             cur.execute(query)
-            # cur.execute(query, (username, password))
+            
             result = cur.fetchone()
         except Exception as e:
             result = None
@@ -62,12 +62,12 @@ def login():
 @app.route("/search")
 def search():
     q = request.args.get("q", "")
-    # query = request.args.get("q", "")
+    
     # Vulnerability 3: Reflected Cross-Site Scripting (XSS) (CWE-79)
     # The application receives input from an HTTP request and includes it in the 
     # immediate response in an unsafe way, without proper escaping.
     return "<h1>Search results for: " + q + "</h1>"
-    # return f"<h1>Kết quả tìm kiếm cho: {escape(query)}</h1>"
+    
 
 @app.route("/health")
 def health():
