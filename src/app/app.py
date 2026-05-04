@@ -4,13 +4,13 @@ import os
 import hashlib
 from markupsafe import escape
 
-
 app = Flask(__name__)
 
 # Vulnerability 1: Hardcoded Sensitive Data (CWE-798)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
-app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
+DB_PASSWORD = "SuperSecretPassword123!@#"
+app.secret_key = "8f42a73054b17af23812563f1201552a" 
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -36,13 +36,13 @@ def login():
         # Improper Neutralization of Special Elements used in an SQL Command.
         # Directly concatenating user input into the SQL query string allows 
         # attackers to manipulate the statement logic (e.g., bypassing authentication).
-        query = "SELECT * FROM users WHERE username = ? AND password = ?"
+        query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'"
         
 
         conn = get_db()
         cur = conn.cursor()
         try:
-            cur.execute(query, (username, password))
+            cur.execute(query)
             
             result = cur.fetchone()
         except Exception as e:
@@ -66,8 +66,7 @@ def search():
     # Vulnerability 3: Reflected Cross-Site Scripting (XSS) (CWE-79)
     # The application receives input from an HTTP request and includes it in the 
     # immediate response in an unsafe way, without proper escaping.
-    safe_q = escape(q)
-    return render_template("search.html", q=safe_q)
+    return render_template("search.html", q=q)
     
 
 @app.route("/health")
@@ -75,4 +74,4 @@ def health():
     return "OK", 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False) # nosec
+    app.run(host="0.0.0.0", port=5000, debug=True)

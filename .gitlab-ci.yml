@@ -60,7 +60,7 @@ trivy-scan:
   services:
     - docker:24-dind
   script:
-    - docker run --rm aquasec/trivy:0.50.1 image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
+    - docker run --rm aquasec/trivy:0.50.1 image --exit-code 1 --severity HIGH,CRITICAL "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
   allow_failure: true
 
 deploy-staging:
@@ -82,7 +82,7 @@ run_dynamic_scan:
     - shell
   script:
     - if (!(Test-Path "zap_reports")) { New-Item -ItemType Directory -Path "zap_reports" }
-    - docker run --rm --network devsecops_net -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://devsecops-web-container:5000 -r zap_report.html -I
+    - docker run --rm --network devsecops_net -v "${PWD}/zap_reports:/zap/wrk:rw" ghcr.io/zaproxy/zaproxy:stable zap-baseline.py -t http://devsecops-web-container:5000 -r zap_report.html
   allow_failure: true
   artifacts:
     when: always
