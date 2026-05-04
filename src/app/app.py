@@ -3,6 +3,8 @@ import sqlite3
 import os
 import hashlib
 from markupsafe import escape
+from flask_talisman import Talisman
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 
@@ -10,7 +12,13 @@ app = Flask(__name__)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
-
+csrf = CSRFProtect(app)
+csp = {
+    'default-src': '\'self\'',
+    'script-src': '\'self\'',
+    'style-src': '\'self\'',
+}
+Talisman(app, content_security_policy=csp)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "database.db")
