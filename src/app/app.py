@@ -65,8 +65,7 @@ def search():
     # Vulnerability 3: Reflected Cross-Site Scripting (XSS) (CWE-79)
     # The application receives input from an HTTP request and includes it in the 
     # immediate response in an unsafe way, without proper escaping.
-    safe_q = escape(q)
-    return render_template("search.html", q=safe_q)
+    return render_template("search.html", q=q)
     
 
 @app.route("/health")
