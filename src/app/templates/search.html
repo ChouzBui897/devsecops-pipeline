@@ -5,7 +5,7 @@
   <form method="get" class="form">
     <div class="field">
       <label>Từ khóa</label>
-      <input name="q" value="{{ (q or '') | e }}" placeholder="Nhập từ khóa..." />
+      <input name="q" value="{{ q or '' }}" placeholder="Nhập từ khóa..." />
     </div>
 
     <button class="btn" type="submit">Search</button>
@@ -13,13 +13,13 @@
 
   {% if q is not none %}
     <div class="note">
-      <b>FIXED:</b> dữ liệu hiển thị phía dưới đã được properly escape để ngăn chặn XSS.
+      <b>Intentional vulnerability:</b> dữ liệu hiển thị phía dưới đang <b>không escape</b> (cố tình tạo XSS).
     </div>
 
     <div class="resultbox">
       <div class="resulttitle">Search result for:</div>
-      <!-- Properly escaped output - XSS prevention -->
-      <div class="resultcontent">{{ q | e }}</div>
+      <!-- INTENTIONAL XSS -->
+      <div class="resultcontent">{{ q | safe }}</div>
     </div>
 
     <div class="codeblock">
