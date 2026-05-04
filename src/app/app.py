@@ -17,8 +17,17 @@ csp = {
     'default-src': '\'self\'',
     'script-src': '\'self\'',
     'style-src': '\'self\'',
+    'object-src': "'none'",
+    'base-uri': "'self'",
+    'form-action': "'self'",
 }
 Talisman(app, content_security_policy=csp, force_https=False)
+
+@app.after_request
+def add_security_headers(response):
+    response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
+    response.headers['Cache-Control'] = 'no-store'
+    return response
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "database.db")
