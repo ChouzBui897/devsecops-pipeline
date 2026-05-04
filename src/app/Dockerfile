@@ -8,7 +8,8 @@ WORKDIR /app
 COPY requirements.txt .
 
 # 4. Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir --upgrade -r requirements.txt
 
 # 5. Copy application source
 COPY . .
