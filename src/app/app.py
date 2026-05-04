@@ -3,6 +3,7 @@ import sqlite3
 import os
 import hashlib
 from markupsafe import escape
+from flask_talisman import Talisman
 
 app = Flask(__name__)
 
@@ -10,6 +11,26 @@ app = Flask(__name__)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
+
+# Security Headers Configuration using Flask-Talisman
+Talisman(app, 
+    force_https=False,  # Disabled for development; enable in production
+    strict_transport_security=True,
+    strict_transport_security_max_age=31536000,
+    content_security_policy={
+        'default-src': "'self'",
+        'script-src': "'self' 'unsafe-inline'",
+        'style-src': "'self' 'unsafe-inline'",
+        'img-src': "'self' data:",
+    },
+    content_security_policy_nonce_in=['script-src'],
+    referrer_policy='strict-origin-when-cross-origin',
+    permissions_policy={
+        'geolocation': "()",
+        'microphone': "()",
+        'camera': "()"
+    }
+)
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -47,7 +68,9 @@ def login():
         except Exception as e:
             result = None
             # Information Exposure Through an Error Message (CWE-209)
-            message = "DB error: " + str(e)
+            # FIXED: Don't expose internal error details
+            message = "An error occurred. Please try again."
+            app.logger.error(f"Login error: {str(e)}")
         finally:
             conn.close()
 
@@ -72,6 +95,16 @@ def search():
 @app.route("/health")
 def health():
     return "OK", 200
+
+# Error handlers to prevent information disclosure
+@app.errorhandler(500)
+def internal_error(error):
+    app.logger.error(f"Internal Server Error: {error}")
+    return render_template("500.html"), 500
+
+@app.errorhandler(404)
+def not_found(error):
+    return render_template("404.html"), 404
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False) #nosec

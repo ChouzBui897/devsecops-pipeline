@@ -13,13 +13,13 @@
 
   {% if q is not none %}
     <div class="note">
-      <b>Intentional vulnerability:</b> dữ liệu hiển thị phía dưới đang <b>không escape</b> (cố tình tạo XSS).
+      <b>FIXED:</b> dữ liệu hiển thị phía dưới đã được properly escape để ngăn chặn XSS.
     </div>
 
     <div class="resultbox">
       <div class="resulttitle">Search result for:</div>
-      <!-- INTENTIONAL XSS -->
-      <div class="resultcontent">{{ q | safe }}</div>
+      <!-- FIXED: Removed | safe filter to properly escape output -->
+      <div class="resultcontent">{{ q }}</div>
     </div>
 
     <div class="codeblock">
