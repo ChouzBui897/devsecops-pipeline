@@ -5,7 +5,7 @@
   <form method="get" class="form">
     <div class="field">
       <label>Từ khóa</label>
-      <input name="q" value="{{ q or '' }}" placeholder="Nhập từ khóa..." />
+      <input name="q" value="{{ (q or '') | e }}" placeholder="Nhập từ khóa..." />
     </div>
 
     <button class="btn" type="submit">Search</button>
@@ -18,8 +18,8 @@
 
     <div class="resultbox">
       <div class="resulttitle">Search result for:</div>
-      <!-- FIXED: Removed | safe filter to properly escape output -->
-      <div class="resultcontent">{{ q }}</div>
+      <!-- Properly escaped output - XSS prevention -->
+      <div class="resultcontent">{{ q | e }}</div>
     </div>
 
     <div class="codeblock">

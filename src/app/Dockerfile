@@ -1,20 +1,29 @@
 # 1. Base image
 FROM python:3.10-slim
 
-# 2. Set working directory
+# 2. Create non-root user for security
+RUN useradd -m -u 1000 appuser
+
+# 3. Set working directory
 WORKDIR /app
 
-# 3. Copy requirements
+# 4. Copy requirements
 COPY requirements.txt .
 
-# 4. Install dependencies
+# 5. Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 5. Copy application source
+# 6. Copy application source
 COPY . .
 
-# 6. Expose port
+# 7. Set proper permissions
+RUN chown -R appuser:appuser /app
+
+# 8. Switch to non-root user
+USER appuser
+
+# 9. Expose port
 EXPOSE 5000
 
-# 7. Run application
+# 10. Run application
 CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
