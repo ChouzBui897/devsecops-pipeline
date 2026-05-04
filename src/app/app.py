@@ -18,7 +18,7 @@ csp = {
     'script-src': '\'self\'',
     'style-src': '\'self\'',
 }
-Talisman(app, content_security_policy=csp)
+Talisman(app, content_security_policy=csp, force_https=False)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "database.db")
