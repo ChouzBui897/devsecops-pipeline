@@ -3,8 +3,7 @@ import sqlite3
 import os
 import hashlib
 from markupsafe import escape
-from flask_talisman import Talisman
-from flask_wtf.csrf import CSRFProtect
+
 
 app = Flask(__name__)
 
@@ -12,23 +11,7 @@ app = Flask(__name__)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
-csrf = CSRFProtect(app)
-CSP_SELF = "'self'"
-csp = {
-    'default-src': CSP_SELF,
-    'script-src': CSP_SELF,
-    'style-src': CSP_SELF,
-    'object-src': "'none'",
-    'base-uri': "'self'",
-    'form-action': "'self'",
-}
-Talisman(app, content_security_policy=csp, force_https=False)
 
-@app.after_request
-def add_security_headers(response):
-    response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
-    response.headers['Cache-Control'] = 'no-store'
-    return response
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_NAME = os.path.join(BASE_DIR, "database.db")
