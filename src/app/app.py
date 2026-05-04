@@ -3,49 +3,13 @@ import sqlite3
 import os
 import hashlib
 from markupsafe import escape
-from flask_talisman import Talisman
-from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
-csrf = CSRFProtect(app)
 
 # Vulnerability 1: Hardcoded Sensitive Data (CWE-798)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
-
-# Security Headers Configuration using Flask-Talisman
-Talisman(app, 
-    force_https=False,  # Disabled for development; enable in production
-    strict_transport_security=True,
-    strict_transport_security_max_age=31536000,
-    x_content_type_options=True,
-    x_frame_options='DENY',
-    content_security_policy={
-        'default-src': ["'self'"],
-        'script-src': ["'self'", "'unsafe-inline'"],
-        'style-src': ["'self'", "'unsafe-inline'"],
-        'img-src': ["'self'", "data:"],
-        'font-src': ["'self'"],
-        'connect-src': ["'self'"],
-        'frame-ancestors': ["'none'"],
-    },
-    referrer_policy='strict-origin-when-cross-origin',
-    permissions_policy={
-        'geolocation': "()",
-        'microphone': "()",
-        'camera': "()"
-    }
-)
-
-# Additional security headers middleware
-@app.after_request
-def set_additional_headers(response):
-    response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
-    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = '0'
-    return response
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -55,11 +19,8 @@ def get_db():
     return sqlite3.connect(DB_NAME)
 
 
-@app.route("/", methods=["GET"])
+@app.route("/")
 def index():
-    # Validate HTTP method - only GET allowed
-    if request.method not in ["GET"]:
-        return "Method not allowed", 405
     return render_template("index.html", title="Home")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -67,48 +28,38 @@ def login():
     message = None
 
     if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+
+        # Vulnerability 2: SQL Injection (CWE-89)
+        # Improper Neutralization of Special Elements used in an SQL Command.
+        # Directly concatenating user input into the SQL query string allows 
+        # attackers to manipulate the statement logic (e.g., bypassing authentication).
+        query = "SELECT * FROM users WHERE username = ? AND password = ?"
+        
+
+        conn = get_db()
+        cur = conn.cursor()
         try:
-            username = request.form.get("username", "")
-            password = request.form.get("password", "")
-
-            # Vulnerability 2: SQL Injection (CWE-89)
-            # Improper Neutralization of Special Elements used in an SQL Command.
-            # Directly concatenating user input into the SQL query string allows 
-            # attackers to manipulate the statement logic (e.g., bypassing authentication).
-            query = "SELECT * FROM users WHERE username = ? AND password = ?"
+            cur.execute(query, (username, password))
             
-
-            conn = get_db()
-            cur = conn.cursor()
-            try:
-                cur.execute(query, (username, password))
-                
-                result = cur.fetchone()
-            except Exception as e:
-                result = None
-                # Information Exposure Through an Error Message (CWE-209)
-                # FIXED: Don't expose internal error details
-                message = "An error occurred. Please try again."
-                app.logger.error(f"Login error: {str(e)}")
-            finally:
-                conn.close()
-
-            if result:
-                message = "Welcome " + username
-            else:
-                message = message or "Login failed"
+            result = cur.fetchone()
         except Exception as e:
-            message = "An error occurred. Please try again."
-            app.logger.error(f"Login handler error: {str(e)}")
+            result = None
+            # Information Exposure Through an Error Message (CWE-209)
+            message = "DB error: " + str(e)
+        finally:
+            conn.close()
+
+        if result:
+            message = "Welcome " + username
+        else:
+            message = message or "Login failed"
 
     return render_template("login.html", title="Login", message=message)
 
-@app.route("/search", methods=["GET"])
+@app.route("/search")
 def search():
-    # Validate HTTP method - only GET allowed
-    if request.method not in ["GET"]:
-        return "Method not allowed", 405
-    
     q = request.args.get("q", "")
     
     # Vulnerability 3: Reflected Cross-Site Scripting (XSS) (CWE-79)
@@ -118,27 +69,9 @@ def search():
     return render_template("search.html", q=safe_q)
     
 
-@app.route("/health", methods=["GET"])
+@app.route("/health")
 def health():
-    # Validate HTTP method - only GET allowed
-    if request.method not in ["GET"]:
-        return "Method not allowed", 405
     return "OK", 200
-
-# Error handlers to prevent information disclosure
-@app.errorhandler(500)
-def internal_error(error):
-    app.logger.error(f"Internal Server Error: {error}")
-    return render_template("500.html"), 500
-
-@app.errorhandler(404)
-def not_found(error):
-    return render_template("404.html"), 404
-
-@app.errorhandler(400)
-def bad_request(error):
-    app.logger.error(f"Bad Request: {error}")
-    return "Bad request", 400
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False) #nosec
