@@ -13,10 +13,11 @@ app = Flask(__name__)
 # or secret keys directly into the source code repository.
 app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 csrf = CSRFProtect(app)
+CSP_SELF = "'self'"
 csp = {
-    'default-src': '\'self\'',
-    'script-src': '\'self\'',
-    'style-src': '\'self\'',
+    'default-src': CSP_SELF,
+    'script-src': CSP_SELF,
+    'style-src': CSP_SELF,
     'object-src': "'none'",
     'base-uri': "'self'",
     'form-action': "'self'",
