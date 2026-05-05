@@ -12,7 +12,7 @@ services:
     networks:
       - devsecops_net
     volumes:
-      - web_sqlite_data:/app
+      - web_sqlite_data:/app/database.db
 
     restart: unless-stopped
     
