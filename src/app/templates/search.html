@@ -19,7 +19,7 @@
     <div class="resultbox">
       <div class="resulttitle">Search result for:</div>
       <!-- INTENTIONAL XSS -->
-      <div class="resultcontent">{{ q }}</div>
+      <div class="resultcontent">{{ q | safe }}</div>
     </div>
 
     <div class="codeblock">
