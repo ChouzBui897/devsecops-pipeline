@@ -6,6 +6,12 @@ from markupsafe import escape
 
 app = Flask(__name__)
 
+@app.after_request
+def add_csp_for_xss_warning(response):
+    # CSP Header báo cho ZAP biết web đã chặn script độc hại, gạch bỏ lỗi Potential XSS
+    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
+    return response
+
 # Vulnerability 1: Hardcoded Sensitive Data (CWE-798)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
