@@ -13,7 +13,7 @@ app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(24))
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_NAME = os.path.join(BASE_DIR, "database.db")
+DB_NAME = os.path.join(BASE_DIR, "data", "database.db")
 
 def get_db():
     return sqlite3.connect(DB_NAME)
