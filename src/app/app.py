@@ -6,12 +6,6 @@ from markupsafe import escape
 
 app = Flask(__name__)
 
-@app.after_request
-def add_csp_for_xss_warning(response):
-    # CSP Header báo cho ZAP biết web đã chặn script độc hại, gạch bỏ lỗi Potential XSS
-    response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline';"
-    return response
-
 # Vulnerability 1: Hardcoded Sensitive Data (CWE-798)
 # Simulating a scenario where developers hardcode database credentials 
 # or secret keys directly into the source code repository.
@@ -52,7 +46,6 @@ def login():
             result = cur.fetchone()
         except Exception as e:
             result = None
-            # Information Exposure Through an Error Message (CWE-209)
             message = "DB error: " + str(e)
         finally:
             conn.close()
@@ -71,7 +64,8 @@ def search():
     # Vulnerability 3: Reflected Cross-Site Scripting (XSS) (CWE-79)
     # The application receives input from an HTTP request and includes it in the 
     # immediate response in an unsafe way, without proper escaping.
-    safe_q = escape(q) if q else ""
+
+    safe_q = escape(q)
     return render_template("search.html", q=safe_q)
     
 
@@ -80,4 +74,4 @@ def health():
     return "OK", 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=False) #nosec
+    app.run(host="0.0.0.0", port=5000, debug=False) #nosec 
