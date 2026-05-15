@@ -30,7 +30,6 @@ sonarqube-check:
   tags:
     - shell
   script:
-    # Thêm --network devsecops_net để container scanner nhìn thấy container sonarqube
     - docker run --rm --network devsecops_net -v "${CI_PROJECT_DIR}:/usr/src" sonarsource/sonar-scanner-cli "-Dsonar.projectKey=devsecops-flask-web" "-Dsonar.sources=src/app" "-Dsonar.host.url=$SONAR_HOST_URL" "-Dsonar.login=$SONAR_TOKEN" "-Dsonar.qualitygate.wait=true"
   allow_failure: true
 
@@ -39,7 +38,6 @@ bandit-sast:
   image: python:3.10-slim
   script:
     - pip install bandit
-    # Quét toàn bộ code trong src/app, xuất kết quả ra màn hình log
     - bandit -r src/app
   allow_failure: true
 
