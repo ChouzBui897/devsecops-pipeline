@@ -1,10 +1,5 @@
 # DevSecOps Web Application Pipeline
 
-## Overview
-This project demonstrates a DevSecOps CI/CD pipeline integrating automated security scanning tools such as SonarQube, Bandit, Trivy, and OWASP ZAP.
-
----
-
 ## 1. Giới thiệu dự án
 Dự án này ứng dụng mô hình DevSecOps với triết lý "Shift-Left" vào vòng đời phát triển phần mềm (SDLC). Hệ thống tự động hóa quá trình rà soát mã nguồn, kiểm tra môi trường chạy và đánh giá ứng dụng trực tiếp trên đường ống (pipeline) CI/CD nhằm phát hiện và ngăn chặn sớm các lỗ hổng bảo mật.
 
